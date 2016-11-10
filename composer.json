@@ -1,0 +1,17 @@
+{
+    "name": "phpredeye/phpfox-service",
+    "description": "PhpFox Service Component",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Nam Nguyen",
+            "email": "nam.ngvan@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Phpfox\\Service\\": "src/"
+        }
+    },
+    "require": {}
+}
