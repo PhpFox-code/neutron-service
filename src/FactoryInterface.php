@@ -1,11 +1,11 @@
 <?php
 
-namespace Phpfox\Service;
+namespace Phpfox\ServiceManager;
 
 /**
  * Interface FactoryInterface
  *
- * @package Phpfox\Service
+ * @package Phpfox\ServiceManager
  */
 interface FactoryInterface
 {

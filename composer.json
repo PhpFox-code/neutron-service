@@ -1,6 +1,6 @@
 {
   "name": "codelego/phpfox-service-manager",
-  "description": "PhpFox Service Component",
+  "description": "Service manager library for phpfox framework.",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -12,8 +12,12 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "Phpfox\\Service\\": "src/"
+      "Phpfox\\ServiceManager\\": "src/"
     }
   },
-  "require": {}
+  "autoload-dev": {
+    "psr-4": {
+      "Phpfox\\ServiceManager\\": "test/"
+    }
+  }
 }
