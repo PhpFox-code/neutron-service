@@ -31,6 +31,17 @@ class ServiceManager
     private $nullFactory = NullFactory::class;
 
     /**
+     * ServiceManager constructor.
+     */
+    public function __construct()
+    {
+        $data = include PHPFOX_DIR . '/config/library.config.php';
+
+        $this->aliases = $data['aliases'];
+        $this->factories = $data['factories'];
+    }
+
+    /**
      * Check has config
      *
      * @param string $name
@@ -51,33 +62,6 @@ class ServiceManager
     {
         return isset($this->cachedService[$id]) ? $this->cachedService[$id]
             : $this->cachedService[$id] = $this->build($id);
-    }
-
-    /**
-     * @param string $id
-     * @param mixed  $service
-     */
-    public function set($id, $service)
-    {
-        $name = isset($this->aliases[$id]) ? $this->aliases[$id] : $id;
-
-        $this->cachedService[$name] = $this->cachedService[$id] = $service;
-    }
-
-    /**
-     * Register service factories. In case service is built, it may have no
-     * affected.
-     *
-     * @param array $services
-     *
-     * @return $this
-     */
-    public function register($services)
-    {
-        foreach ($services as $name => $factory) {
-            $this->factories[$name] = $factory;
-        }
-        return $this;
     }
 
     /**
@@ -118,5 +102,32 @@ class ServiceManager
 
         return $this->cachedService[$name]
             = $this->cachedService[$id] = $factory->factory($this, $name, []);
+    }
+
+    /**
+     * @param string $id
+     * @param mixed  $service
+     */
+    public function set($id, $service)
+    {
+        $name = isset($this->aliases[$id]) ? $this->aliases[$id] : $id;
+
+        $this->cachedService[$name] = $this->cachedService[$id] = $service;
+    }
+
+    /**
+     * Register service factories. In case service is built, it may have no
+     * affected.
+     *
+     * @param array $services
+     *
+     * @return $this
+     */
+    public function register($services)
+    {
+        foreach ($services as $name => $factory) {
+            $this->factories[$name] = $factory;
+        }
+        return $this;
     }
 }
