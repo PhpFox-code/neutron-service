@@ -3,6 +3,7 @@
 namespace Phpfox\Service;
 
 return [
-    'aliases'   => [],
-    'factories' => [],
+    'factories' => [
+        'serviceManager' => ServiceManagerFactory::class,
+    ],
 ];
