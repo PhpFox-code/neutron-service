@@ -1,5 +1,5 @@
 {
-  "name": "codelego/phpfox-service",
+  "name": "codelego/phpfox-service-manager",
   "description": "PhpFox Service Component",
   "type": "library",
   "license": "MIT",
