@@ -92,10 +92,6 @@ class ServiceManager
 
         $factory = new $factoryClass();
 
-        if (!$factory instanceof FactoryInterface) {
-            throw new \RuntimeException("Invalid factory $factoryClass");
-        }
-
         if ($factory->shouldCache()) {
             $this->cachedFactories[$factoryClass] = $factory;
         }
