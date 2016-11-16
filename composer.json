@@ -1,6 +1,6 @@
 {
   "name": "codelego/phpfox-service",
-  "description": "Service manager library for phpfox framework.",
+  "description": "Service library for phpfox framework.",
   "type": "library",
   "license": "MIT",
   "authors": [
