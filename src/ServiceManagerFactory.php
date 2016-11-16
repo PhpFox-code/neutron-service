@@ -1,11 +1,11 @@
 <?php
 
-namespace Phpfox\ServiceManager;
+namespace Phpfox\Service;
 
 /**
  * Class ServiceManagerFactory
  *
- * @package Phpfox\ServiceManager
+ * @package Phpfox\Service
  */
 class ServiceManagerFactory
 {

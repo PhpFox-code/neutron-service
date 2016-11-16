@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpfox\ServiceManager;
+namespace Phpfox\Service;
 
 return [
     'factories' => [
