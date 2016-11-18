@@ -8,27 +8,12 @@ class ServiceManager
     /**
      * @var array
      */
-    private $factories = [];
-
-    /**
-     * @var array
-     */
-    private $aliases = [];
+    private $map = [];
 
     /**
      * @var [mixed]
      */
-    private $cachedService = [];
-
-    /**
-     * @var [FactoryInterface]
-     */
-    private $cachedFactories = [];
-
-    /**
-     * @var string
-     */
-    private $nullFactory = NullFactory::class;
+    private $instances = [];
 
     /**
      * ServiceManager constructor.
@@ -37,8 +22,7 @@ class ServiceManager
     {
         $data = include PHPFOX_DIR . '/config/library.config.php';
 
-        $this->aliases = $data['aliases'];
-        $this->factories = $data['factories'];
+        $this->map = $data['services'];
     }
 
     /**
@@ -50,7 +34,7 @@ class ServiceManager
      */
     public function has($name)
     {
-        return isset($this->factories[$name]);
+        return isset($this->map[$name]);
     }
 
     /**
@@ -60,8 +44,8 @@ class ServiceManager
      */
     public function get($id)
     {
-        return isset($this->cachedService[$id]) ? $this->cachedService[$id]
-            : $this->cachedService[$id] = $this->build($id);
+        return isset($this->instances[$id]) ? $this->instances[$id]
+            : $this->instances[$id] = $this->build($id);
     }
 
     /**
@@ -71,44 +55,32 @@ class ServiceManager
      */
     public function build($id)
     {
-        $name = isset($this->aliases[$id]) ? $this->aliases[$id] : $id;
-
-        if (!is_string($this->factories[$name])) {
+        if (!is_string($this->map[$id])) {
             return null;
         }
 
-        $factoryClass = $this->factories[$name];
+        $ref = $this->map[$id];
 
-        if (null == $factoryClass) {
-            $factoryClass = $this->nullFactory;
+        if (is_string($ref)) {
+            return $this->instances[$id] = new ($ref)();
         }
 
-        if (isset($this->cachedFactories[$factoryClass])) {
-            return $this->cachedService[$name]
-                = $this->cachedService[$id]
-                = $this->cachedFactories[$factoryClass]->factory($this, $name,
-                []);
-        }
+        $ref = array_shift($ref);
 
-        $factory = new $factoryClass();
-
-        if ($factory->shouldCache()) {
-            $this->cachedFactories[$factoryClass] = $factory;
-        }
-
-        return $this->cachedService[$name]
-            = $this->cachedService[$id] = $factory->factory($this, $name, []);
+        return $this->instances[$id]
+            = (new ($ref)())->factory($id);
     }
 
     /**
      * @param string $id
      * @param mixed  $service
+     *
+     * @return $this
      */
     public function set($id, $service)
     {
-        $name = isset($this->aliases[$id]) ? $this->aliases[$id] : $id;
-
-        $this->cachedService[$name] = $this->cachedService[$id] = $service;
+        $this->instances[$id] = $service;
+        return $this;
     }
 
     /**
@@ -121,8 +93,8 @@ class ServiceManager
      */
     public function register($services)
     {
-        foreach ($services as $name => $factory) {
-            $this->factories[$name] = $factory;
+        foreach ($services as $k => $v) {
+            $this->map[$k] = $v;
         }
         return $this;
     }
