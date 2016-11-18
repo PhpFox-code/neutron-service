@@ -44,6 +44,10 @@ class ServiceManager
      */
     public function get($id)
     {
+        if (null == $id) {
+            return $this;
+        }
+
         return isset($this->instances[$id]) ? $this->instances[$id]
             : $this->instances[$id] = $this->build($id);
     }
