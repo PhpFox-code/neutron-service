@@ -3,6 +3,11 @@
 namespace Phpfox\Service;
 
 
+/**
+ * Class ServiceManager
+ *
+ * @package Phpfox\Service
+ */
 class ServiceManager
 {
     /**
@@ -13,28 +18,53 @@ class ServiceManager
     /**
      * @var [mixed]
      */
-    private $instances = [];
+    private $vars = [];
+
+    /**
+     * @var ServiceManager
+     */
+    private static $singleton;
 
     /**
      * ServiceManager constructor.
      */
-    public function __construct()
+    private function __construct()
+    {
+    }
+
+    /**
+     * @return ServiceManager|static
+     */
+    public static function instance()
+    {
+        if (null == self::$singleton) {
+            self::$singleton = new static();
+            self::$singleton->initialize();
+        }
+
+        return self::$singleton;
+    }
+
+    /**
+     *
+     */
+    private function initialize()
     {
         $data = include PHPFOX_DIR . '/config/library.config.php';
 
-        $this->map = $data['services'];
+        $this->map = $data['services']['map'];
     }
 
     /**
      * Check has config
      *
-     * @param string $name
+     * @param string $id
      *
      * @return bool
      */
-    public function has($name)
+    public function has($id)
     {
-        return isset($this->map[$name]);
+        return isset($this->map[$id]);
     }
 
     /**
@@ -48,8 +78,8 @@ class ServiceManager
             return $this;
         }
 
-        return isset($this->instances[$id]) ? $this->instances[$id]
-            : $this->instances[$id] = $this->build($id);
+        return isset($this->vars[$id]) ? $this->vars[$id]
+            : $this->vars[$id] = $this->build($id);
     }
 
     /**
@@ -59,20 +89,24 @@ class ServiceManager
      */
     public function build($id)
     {
-        if (!is_string($this->map[$id])) {
-            return null;
+        if (!isset($this->map[$id])) {
+            throw new \InvalidArgumentException("There are no service alias '{$id}'.");
         }
 
         $ref = $this->map[$id];
 
-        if (is_string($ref)) {
-            return $this->instances[$id] = new ($ref)();
+        $factory = array_shift($ref);
+
+        if (is_string($factory)) {
+            return $this->vars[$id]
+                = (new ($ref)())->factory($id);
         }
 
-        $ref = array_shift($ref);
+        $class = array_shift($ref);
 
-        return $this->instances[$id]
-            = (new ($ref)())->factory($id);
+        return $this->vars[$id]
+            = new ($class)();
+
     }
 
     /**
@@ -83,7 +117,21 @@ class ServiceManager
      */
     public function set($id, $service)
     {
-        $this->instances[$id] = $service;
+        $this->vars[$id] = $service;
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function delete($id)
+    {
+        if (isset($this->vars[$id])) {
+            unset($this->vars[$id]);
+        }
+
         return $this;
     }
 
@@ -91,15 +139,32 @@ class ServiceManager
      * Register service factories. In case service is built, it may have no
      * affected.
      *
-     * @param array $services
+     * @param array $map
      *
      * @return $this
      */
-    public function register($services)
+    public function register($map)
     {
-        foreach ($services as $k => $v) {
+        foreach ($map as $k => $v) {
             $this->map[$k] = $v;
         }
         return $this;
+    }
+
+    /**
+     * @link http://php.net/manual/en/language.oop5.magic.php#object.sleep
+     * @return array
+     */
+    public function __sleep()
+    {
+        return ['map'];
+    }
+
+    /**
+     * @link http://php.net/manual/en/language.oop5.magic.php#object.wakeup
+     */
+    public function __wakeup()
+    {
+
     }
 }
