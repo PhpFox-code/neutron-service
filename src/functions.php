@@ -13,4 +13,12 @@ namespace {
     {
         return ServiceManager::instance()->get($id);
     }
+
+    /**
+     * @return ServiceManager
+     */
+    function services()
+    {
+        return ServiceManager::instance();
+    }
 }

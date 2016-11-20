@@ -26,13 +26,6 @@ class ServiceManager
     private static $singleton;
 
     /**
-     * ServiceManager constructor.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @return ServiceManager|static
      */
     public static function instance()
@@ -48,7 +41,7 @@ class ServiceManager
     /**
      *
      */
-    private function initialize()
+    public function initialize()
     {
         $data = include PHPFOX_DIR . '/config/library.config.php';
 
@@ -74,10 +67,6 @@ class ServiceManager
      */
     public function get($id)
     {
-        if (null == $id) {
-            return $this;
-        }
-
         return isset($this->vars[$id]) ? $this->vars[$id]
             : $this->vars[$id] = $this->build($id);
     }
@@ -99,13 +88,13 @@ class ServiceManager
 
         if (is_string($factory)) {
             return $this->vars[$id]
-                = (new ($ref)())->factory($id);
+                = (new $ref())->factory($id);
         }
 
         $class = array_shift($ref);
 
         return $this->vars[$id]
-            = new ($class)();
+            = new $class();
 
     }
 
