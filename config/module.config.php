@@ -4,6 +4,16 @@ namespace Phpfox\Service;
 
 return [
     'services' => [
-        'map' => [],
+        'map' => [
+            'serviceManager' => [
+                null,
+                ServiceManager::class,
+            ],
+        ],
+    ],
+    'events'   => [
+        'map' => [
+            'onApplicationConfigChanged' => ['serviceManager'],
+        ],
     ],
 ];

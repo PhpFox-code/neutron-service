@@ -43,9 +43,8 @@ class ServiceManager
      */
     public function initialize()
     {
-        $data = include PHPFOX_DIR . '/config/library.config.php';
-
-        $this->map = $data['services']['map'];
+        $this->map = config('services.map');
+        $this->set('serviceManager', $this);
     }
 
     /**
@@ -87,8 +86,10 @@ class ServiceManager
         $factory = array_shift($ref);
 
         if (is_string($factory)) {
-            return $this->vars[$id]
-                = (new $ref())->factory($id);
+            return $this->vars[$id] = call_user_func_array([
+                new $factory(),
+                'factory',
+            ], $ref);
         }
 
         $class = array_shift($ref);
@@ -137,6 +138,13 @@ class ServiceManager
         foreach ($map as $k => $v) {
             $this->map[$k] = $v;
         }
+        return $this;
+    }
+
+    public function onApplicationConfigChanged()
+    {
+        $this->map = config('services.map');
+
         return $this;
     }
 
