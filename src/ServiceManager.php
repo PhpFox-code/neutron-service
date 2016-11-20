@@ -32,18 +32,16 @@ class ServiceManager
     {
         if (null == self::$singleton) {
             self::$singleton = new static();
-            self::$singleton->initialize();
+            self::$singleton->reset();
         }
 
         return self::$singleton;
     }
+    
 
-    /**
-     *
-     */
-    public function initialize()
+    public function reset()
     {
-        $this->map = config('services.map');
+        $this->map = config('services');
         $this->set('serviceManager', $this);
     }
 
@@ -143,7 +141,7 @@ class ServiceManager
 
     public function onApplicationConfigChanged()
     {
-        $this->map = config('services.map');
+        $this->map = config('services');
 
         return $this;
     }
