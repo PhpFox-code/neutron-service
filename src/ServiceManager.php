@@ -37,7 +37,7 @@ class ServiceManager
 
         return self::$singleton;
     }
-    
+
 
     public function reset()
     {
@@ -84,7 +84,7 @@ class ServiceManager
         $factory = array_shift($ref);
 
         if (is_string($factory)) {
-            return $this->vars[$id] = call_user_func_array([
+            return call_user_func_array([
                 new $factory(),
                 'factory',
             ], $ref);
@@ -92,8 +92,7 @@ class ServiceManager
 
         $class = array_shift($ref);
 
-        return $this->vars[$id]
-            = new $class();
+        return new $class();
 
     }
 
@@ -123,28 +122,6 @@ class ServiceManager
         return $this;
     }
 
-    /**
-     * Register service factories. In case service is built, it may have no
-     * affected.
-     *
-     * @param array $map
-     *
-     * @return $this
-     */
-    public function register($map)
-    {
-        foreach ($map as $k => $v) {
-            $this->map[$k] = $v;
-        }
-        return $this;
-    }
-
-    public function onApplicationConfigChanged()
-    {
-        $this->map = config('services');
-
-        return $this;
-    }
 
     /**
      * @link http://php.net/manual/en/language.oop5.magic.php#object.sleep
