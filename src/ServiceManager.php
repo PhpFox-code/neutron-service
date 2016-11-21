@@ -93,7 +93,6 @@ class ServiceManager
         $class = array_shift($ref);
 
         return new $class();
-
     }
 
     /**
