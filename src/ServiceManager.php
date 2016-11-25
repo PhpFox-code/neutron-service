@@ -11,19 +11,17 @@ namespace Phpfox\Service;
 class ServiceManager
 {
     /**
-     * @var array
-     */
-    private $map = [];
-
-    /**
-     * @var [mixed]
-     */
-    private $vars = [];
-
-    /**
      * @var ServiceManager
      */
     private static $singleton;
+    /**
+     * @var array
+     */
+    protected $map = [];
+    /**
+     * @var array
+     */
+    protected $container = [];
 
     /**
      * @return ServiceManager|static
@@ -38,11 +36,23 @@ class ServiceManager
         return self::$singleton;
     }
 
-
     public function reset()
     {
         $this->map = config('services');
         $this->set('serviceManager', $this);
+    }
+
+    /**
+     * @param string $id
+     * @param mixed  $service
+     *
+     * @return $this
+     */
+    public function set($id, $service)
+    {
+        $this->container[$id] = $service;
+
+        return $this;
     }
 
     /**
@@ -64,8 +74,8 @@ class ServiceManager
      */
     public function get($id)
     {
-        return isset($this->vars[$id]) ? $this->vars[$id]
-            : $this->vars[$id] = $this->build($id);
+        return isset($this->container[$id]) ? $this->container[$id]
+            : $this->container[$id] = $this->build($id);
     }
 
     /**
@@ -76,7 +86,7 @@ class ServiceManager
     public function build($id)
     {
         if (!isset($this->map[$id])) {
-            throw new \InvalidArgumentException("There are no service alias '{$id}'.");
+            throw new \InvalidArgumentException("There are no item '{$id}'.");
         }
 
         $ref = $this->map[$id];
@@ -92,19 +102,11 @@ class ServiceManager
 
         $class = array_shift($ref);
 
-        return new $class();
-    }
+        if (empty($ref)) {
+            return new $class();
+        }
 
-    /**
-     * @param string $id
-     * @param mixed  $service
-     *
-     * @return $this
-     */
-    public function set($id, $service)
-    {
-        $this->vars[$id] = $service;
-        return $this;
+        return (new \ReflectionClass($class))->newInstanceArgs($ref);
     }
 
     /**
@@ -114,13 +116,12 @@ class ServiceManager
      */
     public function delete($id)
     {
-        if (isset($this->vars[$id])) {
-            unset($this->vars[$id]);
+        if (isset($this->container[$id])) {
+            unset($this->container[$id]);
         }
 
         return $this;
     }
-
 
     /**
      * @link http://php.net/manual/en/language.oop5.magic.php#object.sleep
