@@ -39,7 +39,7 @@ class ServiceManager
     public function reset()
     {
         $this->map = config('services');
-        $this->set('serviceManager', $this);
+        $this->set('services', $this);
     }
 
     /**
