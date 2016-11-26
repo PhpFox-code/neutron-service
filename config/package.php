@@ -4,7 +4,7 @@ namespace Phpfox\Service;
 
 return [
     'services' => [
-        'serviceManager' => [null, ServiceManager::class,],
+        'serviceManager' => [null, ServiceContainer::class,],
     ],
     'events'   => [
     ],

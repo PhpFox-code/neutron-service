@@ -8,10 +8,10 @@ namespace Phpfox\Service;
  *
  * @package Phpfox\Service
  */
-class ServiceManager
+class ServiceContainer
 {
     /**
-     * @var ServiceManager
+     * @var ServiceContainer
      */
     private static $singleton;
     /**
@@ -24,7 +24,7 @@ class ServiceManager
     protected $container = [];
 
     /**
-     * @return ServiceManager|static
+     * @return ServiceContainer
      */
     public static function instance()
     {
