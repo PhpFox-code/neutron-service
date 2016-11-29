@@ -1,5 +1,5 @@
 {
-  "name": "codelego/phpfox-service",
+  "name": "codelego/neutron-service",
   "description": "Service library for phpfox framework.",
   "type": "library",
   "license": "MIT",
