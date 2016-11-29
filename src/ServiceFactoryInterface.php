@@ -1,11 +1,11 @@
 <?php
 
-namespace Phpfox\Service;
+namespace Neutron\Service;
 
 /**
  * Interface FactoryInterface
  *
- * @package Phpfox\Service
+ * @package Neutron\Service
  */
 interface ServiceFactoryInterface
 {

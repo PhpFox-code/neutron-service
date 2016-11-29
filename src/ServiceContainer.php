@@ -1,12 +1,12 @@
 <?php
 
-namespace Phpfox\Service;
+namespace Neutron\Service;
 
 
 /**
  * Class ServiceManager
  *
- * @package Phpfox\Service
+ * @package Neutron\Service
  */
 class ServiceContainer
 {
